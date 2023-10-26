@@ -15,12 +15,14 @@ language Shapes
 
         concept Geometry
             features (↓name):
-                shapes: Shape[0..*]
+                shapes: IShape[0..*]
+
+        interface IShape
 
         concept Line extends Shape
             features (↓name):
                 end: Coord
                 start: Coord
 
-        abstract concept Shape implements INamed
+        abstract concept Shape implements INamed, IShape
 

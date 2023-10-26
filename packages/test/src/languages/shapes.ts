@@ -11,12 +11,13 @@ const factory = new LanguageFactory(
 export const shapesLanguage = factory.language
 
 const Geometry = factory.concept("Geometry", false)
-const Shape = factory.concept("Shape", true).implementing(builtinClassifiers.inamed)
+const IShape = factory.interface("IShape")
+const Shape = factory.concept("Shape", true).implementing(builtinClassifiers.inamed, IShape)
 const Circle = factory.concept("Circle", false, Shape)
 const Line = factory.concept("Line", false, Shape)
 const Coord = factory.concept("Coord", false)
 
-const GeometryShapes = factory.containment(Geometry, "shapes").ofType(Shape).isMultiple().isOptional()
+const GeometryShapes = factory.containment(Geometry, "shapes").ofType(IShape).isMultiple().isOptional()
 const LineStart = factory.containment(Line, "start").ofType(Coord)
 const LineEnd = factory.containment(Line, "end").ofType(Coord)
 const CircleCenter = factory.containment(Circle, "center").ofType(Coord)
@@ -32,5 +33,5 @@ Circle.havingFeatures(CircleRadius, CircleCenter)
 Line.havingFeatures(LineStart, LineEnd)
 Coord.havingFeatures(CoordX, CoordY, CoordZ)
 
-shapesLanguage.havingEntities(Coord, Geometry, Shape, Circle, Line)
+shapesLanguage.havingEntities(Coord, Geometry, IShape, Shape, Circle, Line)
 

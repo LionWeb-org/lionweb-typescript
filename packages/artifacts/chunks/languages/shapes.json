@@ -54,6 +54,7 @@
           "children": [
             "tkFfQ8zQUGkRYuf49jGEQbT/tEWMDgOF/9tCVhysZp4=",
             "6WenyMw62+3cfpFVnR5fHrPuH7W2bbd5ckL/XGqIXvI=",
+            "J6Ht+ZUBOTJcVeAd2+D0/5Oy0hVp9/NNymMjcyVvghg=",
             "nGVjRMnytakFG6wZCA3z9k/SAT/Cl/s7a9JsUXzmQYA=",
             "Zo2fmW+75SutxNaDoiEVWqizBqWCY9a/GA0kCsyZ+BY=",
             "gO8PIp6jwFRFGxjhKvUkvqQzPp5tA7uoyq1Ds+++VrE="
@@ -430,14 +431,62 @@
           },
           "targets": [
             {
-              "resolveInfo": "Shape",
-              "reference": "nGVjRMnytakFG6wZCA3z9k/SAT/Cl/s7a9JsUXzmQYA="
+              "resolveInfo": "IShape",
+              "reference": "J6Ht+ZUBOTJcVeAd2+D0/5Oy0hVp9/NNymMjcyVvghg="
             }
           ]
         }
       ],
       "annotations": [],
       "parent": "6WenyMw62+3cfpFVnR5fHrPuH7W2bbd5ckL/XGqIXvI="
+    },
+    {
+      "id": "J6Ht+ZUBOTJcVeAd2+D0/5Oy0hVp9/NNymMjcyVvghg=",
+      "classifier": {
+        "language": "LionCore-M3",
+        "version": "2023.1",
+        "key": "Interface"
+      },
+      "properties": [
+        {
+          "property": {
+            "language": "LionCore-M3",
+            "version": "2023.1",
+            "key": "IKeyed-key"
+          },
+          "value": "IShape"
+        },
+        {
+          "property": {
+            "language": "LionCore-builtins",
+            "version": "2023.1",
+            "key": "LionCore-builtins-INamed-name"
+          },
+          "value": "IShape"
+        }
+      ],
+      "containments": [
+        {
+          "containment": {
+            "language": "LionCore-M3",
+            "version": "2023.1",
+            "key": "Classifier-features"
+          },
+          "children": []
+        }
+      ],
+      "references": [
+        {
+          "reference": {
+            "language": "LionCore-M3",
+            "version": "2023.1",
+            "key": "Interface-extends"
+          },
+          "targets": []
+        }
+      ],
+      "annotations": [],
+      "parent": "degCinkTmS4XeJW0Zt0gH5vpfm/A1DXx/661McUwJYE="
     },
     {
       "id": "nGVjRMnytakFG6wZCA3z9k/SAT/Cl/s7a9JsUXzmQYA=",
@@ -509,6 +558,10 @@
             {
               "resolveInfo": "INamed",
               "reference": "LionCore-builtins-INamed"
+            },
+            {
+              "resolveInfo": "IShape",
+              "reference": "J6Ht+ZUBOTJcVeAd2+D0/5Oy0hVp9/NNymMjcyVvghg="
             }
           ]
         }

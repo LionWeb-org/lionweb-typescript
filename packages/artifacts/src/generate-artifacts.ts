@@ -6,6 +6,7 @@ import {
     generateMermaidForLanguage,
     generatePlantUmlForLanguage,
     GenerationOptions,
+    languageInstantiationFor,
     tsTypesForLanguage,
     writeJsonAsFile
 } from "@lionweb/utilities"
@@ -37,10 +38,14 @@ const saveLanguageFiles = (language: Language, name: string, ...generationOption
 
 
 saveLanguageFiles(lioncore, "lioncore")
+writeFileSync("C#-code/LionCore.cs", languageInstantiationFor(lioncore, "LionCore", "LionWeb.Core.M3"))
 saveLanguageFiles(lioncoreBuiltins, "builtins")
+writeFileSync("C#-code/BuiltIns.cs", languageInstantiationFor(lioncoreBuiltins, "BuiltIns", "LionWeb.Core.M2"))
 
 
 saveLanguageFiles(shapesLanguage, "shapes", GenerationOptions.assumeSealed)
+shapesLanguage.name = "ShapesLanguage"
+writeFileSync("C#-code/ShapesLanguage.cs", languageInstantiationFor(shapesLanguage, "ShapesLanguage", "Examples.Shapes.M2"))
 
 
 saveLanguageFiles(libraryLanguage, "library")
@@ -54,6 +59,7 @@ console.log(`serialized library M1`)
 
 
 saveLanguageFiles(languageWithEnum, "with-enum")
+writeFileSync("C#-code/WithEnum.cs", languageInstantiationFor(languageWithEnum, "WithEnum", "Examples.M2"))
 
 
 saveLanguageFiles(multiLanguage, "multi")

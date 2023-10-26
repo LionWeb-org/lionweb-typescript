@@ -29,9 +29,11 @@ export type Coord = DynamicNode & {
 export type Geometry = DynamicNode & {
     // classifier -> Geometry
     settings: {
-        shapes: Shape[];
+        shapes: IShape[];
     };
 };
+
+/** interface */ export type IShape = DynamicNode;
 
 export type Line = Shape & {
     // classifier -> Line
@@ -41,7 +43,7 @@ export type Line = Shape & {
     };
 };
 
-/** abstract */ export type Shape = INamed & {
+/** abstract */ export type Shape = INamed & IShape & {
     // classifier -> Circle | Line
 };
 
