@@ -38,13 +38,13 @@ const orderedSerializedProperty = ({property, value}: SerializedProperty): Seria
 const orderedSerializedContainment = ({containment, children}: SerializedContainment): SerializedContainment =>
     ({
         containment: orderedMetaPointer(containment),
-        children
+        children    // TODO  ensure [] if empty
     })
 
 const orderedSerializedReference = ({reference, targets}: SerializedReference): SerializedReference =>
     ({
         reference: orderedMetaPointer(reference),
-        targets: targets.map(orderedSerializedReferenceTarget)
+        targets: targets.map(orderedSerializedReferenceTarget)    // TODO  ensure [] if empty
     })
 
 const orderedSerializedNode = ({id, classifier, properties, containments, references, annotations, parent}: SerializedNode): SerializedNode =>
@@ -54,7 +54,7 @@ const orderedSerializedNode = ({id, classifier, properties, containments, refere
         properties: properties.map(orderedSerializedProperty),
         containments: containments.map(orderedSerializedContainment),
         references: references.map(orderedSerializedReference),
-        annotations,
+        annotations,    // TODO  ensure [] if empty
         parent
     })
 
