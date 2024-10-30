@@ -3,17 +3,42 @@
 * Update to 2024.1 specification; that includes:
   * [Remove the JSON Standard Primitive type](https://github.com/LionWeb-io/lionweb-typescript/issues/161)
   * [Add support for value types](https://github.com/LionWeb-io/lionweb-typescript/issues/160)
+* Re-organize into packages (this is [issue #154](https://github.com/LionWeb-io/lionweb-typescript/issues/154) — see the _“Packages”_ section.
+    This might make [issue #86](https://github.com/LionWeb-io/lionweb-typescript/issues/86) obsolete).
 
-* Re-organize into packages (this is [issue #154](https://github.com/LionWeb-io/lionweb-typescript/issues/154), which might make [issue #86](https://github.com/LionWeb-io/lionweb-typescript/issues/86) obsolete):
-  * `serialization`: all serialization types — issues [#107](https://github.com/LionWeb-io/lionweb-typescript/issues/107) and [#106](https://github.com/LionWeb-io/lionweb-typescript/issues/106) can be considered to address this as well
-  * `base`: base types such as `Node`
-  * `internal-utils`: internal utilities, such as for working with arrays, maps, doing topological sorting, etc.
-  * `m3`: LionCore M3
-  * `m2`: LionCore builtins, language (de-)serialization, factories, (maybe some!) convenience/helper functionality
-  * `m1`: model (de-)serialization
-  * `validation`: validation of serialization chunks — as standalone as possible
-  * `utilities`: ?
-  * `queries`: ?
+
+## Packages
+
+![The packages, including dependencies](./packages.svg)
+
+* `{base|ts}-utils`: LionWeb-agnostic utility/helper functionality, specifically for working with arrays and maps/objects.
+    Don't depend on Node.js here — specifically: don't use `node:fs`!
+* `serialization`: all serialization types (prefixed with `LionWebJson`), and some utility functionality like comparing meta-pointers.
+* `serialization-utils`: utilities that deal exclusively with types from the `serialization` package.
+    Sub packages:
+    * diffing (moved from current `validation`)
+    * textualization — i.e., a textual syntax for serialization chunks.
+        Allow optional _name provider_ to replace keys/ids with names coming from an M2.
+* `core`: the core types for models.
+    Sub packages:
+    * `M1`: types `LionWebNode`, `LionWebId`, etc., and (de-)serialization of models
+    * `M2`: (de-)serialization of languages (M2s), and built-ins including (de-)serialization of primitive values
+    * `M3`: types `LionWebLanguage`, `LionWebClassifier`, etc.; LionCore self-definition, symbol table (lookup)
+* `utils`: utility/helper functionality around M1s and M2s.
+    Sub packages:
+    * `M1`: language-aware textualization (delegating to the textualization in `serialization-utils` with a name provider)
+    * `M2`: textualization of an M2, infer language from a serialization chunk
+* `issues`: types and utilities (e.g., `JsonPath` moved from the current `validation` package) for issues.
+* `correctness`: validation of serialization chunks, either M2-agnostic or M2-aware — aligned with the correctness document.
+* `generation`: generation of TS code, diagrams, etc.
+* `cli`: an NPM package that exposes command-line access to functionality in `serialization-utils`, `utils`, and `generation` packages.
+
+
+## Various thoughts
+
+* Prefix types with `LionWeb`
+  * In the `serialization` package: prefix types with `LionWebJson`
+  * Don't use `Mn` pre-/infixes as these are “just” for conceptual or technical organization
 
 * Rename `InstantiationFacade` &rarr; `Factory`
   * And `ExtractionFacade` &rarr; `Reflector`?
@@ -35,7 +60,19 @@
     * Provide factory getter and `setFeatureValue` that knows about moving children between parents in writable part.
 
 * Issues:
-  * [Implement reference utils](https://github.com/LionWeb-io/lionweb-typescript/issues/165)
-  * [Fix deserialization to work with meta-circular language definitions](https://github.com/LionWeb-io/lionweb-typescript/issues/164)
   * [Update top-level `README.md` to also document release process](https://github.com/LionWeb-io/lionweb-typescript/issues/152)
+
+
+## Way of working
+
+* Principles: documentation and (unit) tests **first**!
+  * Provide a _cookbook_
+  * In code, provide both what as “what's this used for (and how)” documentation
+* Do focused, “burst-mode”, co-located work!
+* Keep work in same repo:
+  * In a branch `develop-v1`
+  * In a sub-directory `v1-packages/`
+  * Temporarily use `v1-core` instead of `core` as package name in `package.json` as these need to be unique in a multi-package repo, but directory can be `core/` — same for `cli`
+  * At the top-level, prefix NPM script names with `v1-`
+  * When ready, copy all `v1-packages/` over to `packages/` — no releasing until then
 
