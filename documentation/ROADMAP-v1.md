@@ -14,6 +14,14 @@
 * `{base|ts}-utils`: LionWeb-agnostic utility/helper functionality, specifically for working with arrays and maps/objects.
     Don't depend on Node.js here — specifically: don't use `node:fs`!
 * `serialization`: all serialization types (prefixed with `LionWebJson`), and some utility functionality like comparing meta-pointers.
+
+>  *Jos: I think we should call this `lionweb-json` instead of 'serialization'?
+   These Json objects are still JavaScript.
+   The actual serialization functionality is in other packages.*
+
+>  *Jos: And then the next package (serialization-utils) should be called `lionweb-json-utils`.*
+
+
 * `serialization-utils`: utilities that deal exclusively with types from the `serialization` package.
     Sub packages:
     * diffing (moved from current `validation`)
@@ -28,7 +36,12 @@
     Sub packages:
     * `M1`: language-aware textualization (delegating to the textualization in `serialization-utils` with a name provider)
     * `M2`: textualization of an M2, infer language from a serialization chunk
+> *Jos: alternatively the `lionweb-json-utils` (now called `serialization-utils`) could also be moved here.
+       and renamed to `lionweb-json`*
 * `issues`: types and utilities (e.g., `JsonPath` moved from the current `validation` package) for issues.
+
+> *Jos: Maybe call this `findings` to align with the unfinished language we were defining.*
+  
 * `correctness`: validation of serialization chunks, either M2-agnostic or M2-aware — aligned with the correctness document.
 * `generation`: generation of TS code, diagrams, etc.
 * `cli`: an NPM package that exposes command-line access to functionality in `serialization-utils`, `utils`, and `generation` packages.
@@ -38,11 +51,13 @@
 
 * Prefix types with `LionWeb`
   * In the `serialization` package: prefix types with `LionWebJson`
-  * Don't use `Mn` pre-/infixes as these are “just” for conceptual or technical organization
+  * Don't use `M1/2/3` pre-/infixes as these are “just” for conceptual or technical organization
 
 * Rename `InstantiationFacade` &rarr; `Factory`
   * And `ExtractionFacade` &rarr; `Reflector`?
-
+> *Jos: And make sure there are cookbooks for both them, as I (JW) find them hard to understand and use.
+    preferrably simplify them (don't know how yet)*
+  
 * Give deserialization a better API:
   * Pair up languages and their factories
   * Make deserialization more configurable:
@@ -53,9 +68,17 @@
   * This is based on the following principles:
     * We can deal with broken models, so a “small” problem in the serialization should not prevent the deserialization as a whole.
       (The GPL types that the model is deserialized into might have a different opinion about it, but that's its problem.)
-    * We should uncover _all_ problems during deserialization, not just the first one and then quit.
-    * I (=MB) find it useful to do things in an FP-style, so effectively everything should be a `flatMap` of-sorts.
-    	In the end, it should be understandable and usable — that's the final criterion.
+
+> *Jos: But there must be a notification os some kind that the model was repaired.*
+
+   * We should uncover _all_ problems during deserialization, not just the first one and then quit.
+   * I (=MB) find it useful to do things in an FP-style, so effectively everything should be a `flatMap` of-sorts.
+  	In the end, it should be understandable and usable — that's the final criterion.
+
+> *Jos: I (JW) find that too much FP-style often makes things harder to read and understand.
+> I find readability more important than being concise, so I agree with the final criterion :-).
+       We need to find the right balance here*
+      
   * Split readable and writable parts of `Node` interface.
     * Provide factory getter and `setFeatureValue` that knows about moving children between parents in writable part.
 
