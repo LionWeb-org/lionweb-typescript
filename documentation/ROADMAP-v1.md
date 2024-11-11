@@ -43,6 +43,7 @@
 > *Jos: Maybe call this `findings` to align with the unfinished language we were defining.*
   
 * `correctness`: validation of serialization chunks, either M2-agnostic or M2-aware — aligned with the correctness document.
+> *Maybe posit that this package is developed, **and unit tested** concurrently with the `serialization` and `core` packages?*
 * `generation`: generation of TS code, diagrams, etc.
 * `cli`: an NPM package that exposes command-line access to functionality in `serialization-utils`, `utils`, and `generation` packages.
 
@@ -57,7 +58,8 @@
   * And `ExtractionFacade` &rarr; `Reflector`?
 > *Jos: And make sure there are cookbooks for both them, as I (JW) find them hard to understand and use.
     preferrably simplify them (don't know how yet)*
-  
+>> *Meinte: I was thinking that maybe we'd have `Factory` (for instantiating instances), `Writer` (for setting/writing values on instances), and `Reader` (for reading values on instances).*
+
 * Give deserialization a better API:
   * Pair up languages and their factories
   * Make deserialization more configurable:
@@ -79,7 +81,7 @@
 > I find readability more important than being concise, so I agree with the final criterion :-).
        We need to find the right balance here*
       
-  * Split readable and writable parts of `Node` interface.
+  * Split readable and writable parts of `Node` interface — i.e., `Reader`, and `Writer`, in addition to `Factory` (see also above).
     * Provide factory getter and `setFeatureValue` that knows about moving children between parents in writable part.
 
 * Issues:
