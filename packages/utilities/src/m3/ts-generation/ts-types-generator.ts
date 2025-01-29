@@ -239,7 +239,7 @@ export const tsTypesForLanguage = (language: Language, ...generationOptions: Gen
     return asString(
         [
             `// Warning: this file is generated!`,
-            `// Modifying it by hand it useless at best, and sabotage at worst.`,
+            `// Modifying it by hand is useless at best, and sabotage at worst.`,
             ``,
             `/*
  * language's metadata:

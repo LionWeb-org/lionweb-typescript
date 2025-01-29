@@ -3,12 +3,18 @@ import {expect} from "chai"
 import {
     Annotation,
     builtinClassifiers,
+    builtinPrimitives,
+    concatenator,
     Concept,
     currentSerializationFormatVersion,
     DefaultPrimitiveTypeSerializer,
+    dynamicExtractionFacade,
+    DynamicNode,
     Enumeration,
     EnumerationLiteral,
     Language,
+    LanguageFactory,
+    lastOf,
     Reference,
     SerializationChunk,
     serializeLanguages,
@@ -219,6 +225,157 @@ describe("serialization", () => {
         const serSelfRef = serNode.references.find((serRef) => serRef.reference.key === "Concept-selfRef")
         expect(serSelfRef).to.not.be.undefined
         expect(serSelfRef!.targets).to.deep.eq([{ reference: "instance", resolveInfo: null }])
+    })
+
+})
+
+
+describe("serialization of empty (unset) values", () => {
+
+    const factory = new LanguageFactory("serialization-language", "0", concatenator("-"), lastOf)
+    const enumeration = factory.enumeration("enumeration")
+    const concept = factory.concept("concept", false)
+    factory.property(concept, "stringProperty").ofType(builtinPrimitives.stringDatatype).isOptional()
+    factory.property(concept, "integerProperty").ofType(builtinPrimitives.integerDatatype).isOptional()
+    factory.property(concept, "booleanProperty").ofType(builtinPrimitives.booleanDatatype).isOptional()
+    factory.property(concept, "enumProperty").ofType(enumeration).isOptional()
+    factory.containment(concept, "containment").ofType(concept).isOptional()
+    factory.containment(concept, "containments").ofType(concept).isOptional().isMultiple()
+    factory.reference(concept, "reference").ofType(concept).isOptional()
+    factory.reference(concept, "references").ofType(concept).isOptional().isMultiple()
+
+    const node: DynamicNode = {
+        id: "foo",
+        classifier: concept,
+        settings: {},
+        annotations: []
+    }
+
+    it("with skipEmptyValues = false (=default), empty values are serialized", () => {
+        const expectedSerializationChunk: SerializationChunk = {
+            serializationFormatVersion: "2023.1",
+            languages: [
+                {
+                    key: "serialization-language",
+                    version: "0"
+                }
+            ],
+            nodes: [
+                {
+                    id: "foo",
+                    classifier: {
+                        language: "serialization-language",
+                        version: "0",
+                        key: "concept"
+                    },
+                    properties: [
+                        {
+                            property: {
+                                key: "stringProperty",
+                                language: "serialization-language",
+                                version: "0"
+                            },
+                            value: null
+                        },
+                        {
+                            property: {
+                                key: "integerProperty",
+                                language: "serialization-language",
+                                version: "0"
+                            },
+                            value: null
+                        },
+                        {
+                            property: {
+                                key: "booleanProperty",
+                                language: "serialization-language",
+                                version: "0"
+                            },
+                            value: null
+                        },
+                        {
+                            property: {
+                                key: "enumProperty",
+                                language: "serialization-language",
+                                version: "0"
+                            },
+                            value: null
+                        }
+                    ],
+                    containments: [
+                        {
+                            containment: {
+                                language: "serialization-language",
+                                version: "0",
+                                key: "containment"
+                            },
+                            children: []
+                        },
+                        {
+                            containment: {
+                                language: "serialization-language",
+                                version: "0",
+                                key: "containments"
+                            },
+                            children: []
+                        }
+                    ],
+                    references: [
+                        {
+                            reference: {
+                                language: "serialization-language",
+                                version: "0",
+                                key: "reference"
+                            },
+                            targets: []
+                        },
+                        {
+                            reference: {
+                                language: "serialization-language",
+                                version: "0",
+                                key: "references"
+                            },
+                            targets: []
+                        }
+                    ],
+                    annotations: [],
+                    parent: null
+                }
+            ]
+        }
+        const actualSerializationChunk = serializeNodes([node], dynamicExtractionFacade)    // (serializeEmptyFeatures has true as default)
+        expect(actualSerializationChunk).to.eql(expectedSerializationChunk)
+        const usingExplicitOption = serializeNodes([node], dynamicExtractionFacade, { serializeEmptyFeatures: true })
+        expect(usingExplicitOption).to.eql(expectedSerializationChunk)
+    })
+
+    it("with skipEmptyValues = true, empty values are not serialized", () => {
+        const expectedSerializationChunk: SerializationChunk = {
+            serializationFormatVersion: "2023.1",
+            languages: [
+                {
+                    key: "serialization-language",
+                    version: "0"
+                }
+            ],
+            nodes: [
+                {
+                    id: "foo",
+                    classifier: {
+                        language: "serialization-language",
+                        version: "0",
+                        key: "concept"
+                    },
+                    properties: [],
+                    containments: [],
+                    references: [],
+                    annotations: [],
+                    parent: null
+                }
+            ]
+        }
+        const actualSerializationChunk = serializeNodes([node], dynamicExtractionFacade, { serializeEmptyFeatures: false })
+        expect(actualSerializationChunk).to.eql(expectedSerializationChunk)
     })
 
 })

@@ -157,7 +157,6 @@ describe("Concept constraints", () => {
         cis[2].extends.push(cis[1])
         cis[1].extends.push(cis[0])
         cis[0].extends.push(cis[2])
-        language.entities.push(...cis)
 
         const issues = issuesLanguage(language)
         deepEqual(issues.length, 3)
@@ -170,7 +169,6 @@ describe("Concept constraints", () => {
         const {language} = factory
         const ci = factory.interface("foo")
         ci.extends.push(ci)
-        language.entities.push(ci)
 
         const issues = issuesLanguage(language)
         deepEqual(issues.length, 1)

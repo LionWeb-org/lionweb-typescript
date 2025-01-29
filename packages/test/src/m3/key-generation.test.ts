@@ -16,12 +16,10 @@ describe("key generation", () => {
         )
 
         const form = factory.concept("Form", false)
-        factory.language.havingEntities(form)
 
         deepEqual(form.key, "FormLanguage-Form")
 
         const size = factory.property(form, "size").ofType(builtinPrimitives.integerDatatype)
-        form.havingFeatures(size)
 
         deepEqual(size.key, "FormLanguage-Form-size")
     })

@@ -1,7 +1,8 @@
 import {Classifier, isINamed, Language, M3Concept} from "./types.js"
-import {allContaineds, flatMap, idOf, inheritedCycleWith, keyOf, namedsOf, qualifiedNameOf} from "./functions.js"
-import {duplicatesAmong} from "../utils/map-helpers.js"
+import {allContaineds, flatMap, inheritedCycleWith, keyOf, namedsOf, qualifiedNameOf} from "./functions.js"
+import {idOf} from "../functions.js"
 import {isValidIdentifier} from "../types.js"
+import {duplicatesAmong} from "../utils/map-helpers.js"
 
 
 /**

@@ -20,11 +20,11 @@ const lioncoreBuiltinsKey = "LionCore-builtins"
 //      https://lionweb-io.github.io/specification/metametamodel/metametamodel.html#_overview
 
 
-interface INamed extends Node {
+interface INamed {
     name: string
 }
 
-const isINamed = (node: Node): node is INamed =>
+const isINamed = (node: object): node is INamed =>
     "name" in node && typeof node.name === "string"
 
 const simpleNameDeducer: ResolveInfoDeducer<Node> =
@@ -34,9 +34,6 @@ const simpleNameDeducer: ResolveInfoDeducer<Node> =
 interface IKeyed extends INamed {
     key: Id
 }
-
-const isIKeyed = (node: Node): node is IKeyed =>
-    isINamed(node) && "key" in node && typeof node.key === "string"
 
 
 /**
@@ -141,8 +138,7 @@ abstract class LanguageEntity extends M3Node {
 abstract class Classifier extends LanguageEntity {
     features: Feature[] = [] // (containment)
     havingFeatures(...features: Feature[]) {
-        // TODO  check actual types of features, or use type shapes/interfaces
-        this.features.push(...features)
+        this.features.push(...features.filter((feature) => this.features.indexOf(feature) < 0))
         return this
     }
     metaPointer(): MetaPointer {
@@ -228,7 +224,7 @@ class Enumeration extends Datatype {
     }
     literals: EnumerationLiteral[] = [] // (containment)
     havingLiterals(...literals: EnumerationLiteral[]) {
-        this.literals.push(...literals)
+        this.literals.push(...literals.filter((literal) => this.literals.indexOf(literal) < 0))
         return this
     }
 }
@@ -257,18 +253,13 @@ class Language extends M3Node {
         super(id, name, key)
         this.version = version
     }
-    havingEntities(...elements: LanguageEntity[]): Language {
-        const nonLanguageElements = elements.filter((element) => !(element instanceof LanguageEntity))
-        if (nonLanguageElements.length > 0) {
-            throw Error(`trying to add non-LanguageElements to Language: ${nonLanguageElements.map((node) => `<${node.constructor.name}>"${node.name}"`).join(", ")}`)
-        }
-        this.entities.push(...elements)
+    havingEntities(...entities: LanguageEntity[]): Language {
+        this.entities.push(...entities.filter((entity) => this.entities.indexOf(entity) < 0))
         return this
     }
-    dependingOn(...metamodels: Language[]): Language {
-        // TODO  check actual types of metamodels, or use type shapes/interfaces
+    dependingOn(...languages: Language[]): Language {
         this.dependsOn.push(
-            ...metamodels
+            ...languages
                 .filter((language) => language.key !== lioncoreBuiltinsKey)
         )
         return this
@@ -314,7 +305,6 @@ export {
     Property,
     Reference,
     isINamed,
-    isIKeyed,
     lioncoreBuiltinsKey,
     simpleNameDeducer
 }

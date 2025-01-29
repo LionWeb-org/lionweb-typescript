@@ -1,7 +1,7 @@
 {
-    "core"      : "0.6.11",
-    "utilities" : "0.6.11",
-    "cli"       : "0.6.12",
+    "core"      : "0.6.12",
+    "utilities" : "0.6.12",
+    "cli"       : "0.6.13",
     "validation": "0.6.3",
     "test"      : "0.7.0-dev.0",
     "artifacts" : "0.7.0-dev.0"

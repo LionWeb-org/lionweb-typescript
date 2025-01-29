@@ -13,19 +13,15 @@ const factory = new LanguageFactory(
  */
 export const metaLanguage = factory.language
 
-const anAnnotation = factory.annotation("AnAnnotation")
+factory.annotation("AnAnnotation")
 
 const aConcept = factory.concept("AConcept", false)
-const aProperty = factory.property(aConcept, "aProperty").ofType(builtinPrimitives.jsonDatatype)
-const aContainment = factory.containment(aConcept, "aContainment").ofType(aConcept)
-const aReference = factory.reference(aConcept, "aReference").ofType(aConcept)
-aConcept.havingFeatures(aProperty, aContainment, aReference)
+factory.property(aConcept, "aProperty").ofType(builtinPrimitives.jsonDatatype)
+factory.containment(aConcept, "aContainment").ofType(aConcept)
+factory.reference(aConcept, "aReference").ofType(aConcept)
 
 const anEnumeration = factory.enumeration("AnEnumeration")
-const anEnumerationLiteral = factory.enumerationLiteral(anEnumeration, "anEnumerationLiteral")
-anEnumeration.havingLiterals(anEnumerationLiteral)
+factory.enumerationLiteral(anEnumeration, "anEnumerationLiteral")
 
-const anInterface = factory.interface("AnInterface")
-
-metaLanguage.havingEntities(anAnnotation, aConcept, anEnumeration, anInterface)
+factory.interface("AnInterface")
 

@@ -15,10 +15,8 @@ export const AnotherConcept = factory.concept("AnotherConcept", false)
 
 export const SomeConcept_ref = factory.reference(SomeConcept, "ref").ofType(AnotherConcept).isOptional()
 export const SomeConcept_refs = factory.reference(SomeConcept, "refs").ofType(AnotherConcept).isMultiple()
-SomeConcept.havingFeatures(SomeConcept_ref, SomeConcept_refs)
 
 export const SomeAnnotation = factory.annotation("SomeAnnotation")
 SomeAnnotation.annotates = AnotherConcept
 export const SomeAnnotation_ref = factory.reference(SomeAnnotation, "ref").ofType(SomeConcept)
-SomeAnnotation.havingFeatures(SomeAnnotation_ref)
 

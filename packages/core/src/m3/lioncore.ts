@@ -39,26 +39,16 @@ const ikeyed = factory.interface("IKeyed")
 const ikeyed_key = factory.property(ikeyed, "key")
     .ofType(stringDatatype)
 
-ikeyed.havingFeatures(ikeyed_key)
-
 
 const feature = factory.concept("Feature", true).implementing(ikeyed)
 
 const feature_optional = factory.property(feature, "optional")
     .ofType(booleanDatatype)
 
-feature.havingFeatures(
-    feature_optional
-)
-
 
 const property = factory.concept("Property", false, feature)
 
 const property_type = factory.reference(property, "type")
-
-property.havingFeatures(
-    property_type
-)
 
 
 const link = factory.concept("Link", true, feature)
@@ -67,11 +57,6 @@ const link_multiple = factory.property(link, "multiple")
     .ofType(booleanDatatype)
 
 const link_type = factory.reference(link, "type")
-
-link.havingFeatures(
-    link_multiple,
-    link_type
-)
 
 
 const containment = factory.concept("Containment", false, link)
@@ -91,10 +76,6 @@ const classifier_features = factory.containment(classifier, "features")
     .isMultiple()
     .ofType(feature)
 
-classifier.havingFeatures(
-    classifier_features
-)
-
 link_type.ofType(classifier)
 
 
@@ -111,12 +92,6 @@ const annotation_extends = factory.reference(annotation, "extends")
 const annotation_implements = factory.reference(annotation, "implements")
     .isMultiple()
     .isOptional()
-
-annotation.havingFeatures(
-    annotation_annotates,
-    annotation_extends,
-    annotation_implements
-)
 
 
 const concept = factory.concept("Concept", false, classifier)
@@ -135,13 +110,6 @@ const concept_implements = factory.reference(concept, "implements")
     .isOptional()
     .isMultiple()
 
-concept.havingFeatures(
-    concept_abstract,
-    concept_partition,
-    concept_extends,
-    concept_implements
-)
-
 
 const interface_ = factory.concept("Interface", false, classifier)
 
@@ -149,8 +117,6 @@ const interface_extends = factory.reference(interface_, "extends")
     .isOptional()
     .isMultiple()
     .ofType(interface_)
-
-interface_.havingFeatures(interface_extends)
 
 annotation_implements.ofType(interface_)
 concept_implements.ofType(interface_)
@@ -169,8 +135,6 @@ const enumeration = factory.concept("Enumeration", false, dataType)
 const enumeration_literals = factory.containment(enumeration, "literals")
     .isMultiple()
     .isOptional()
-
-enumeration.havingFeatures(enumeration_literals)
 
 
 const enumerationLiteral = factory.concept("EnumerationLiteral", false)
@@ -195,28 +159,6 @@ const language_dependsOn = factory.reference(language, "dependsOn")
     .isOptional()
     .isMultiple()
     .ofType(language)
-
-language.havingFeatures(language_version, language_entities, language_dependsOn)
-
-
-lioncore.havingEntities(
-    ikeyed,
-    feature,
-    property,
-    link,
-    containment,
-    reference,
-    languageEntity,
-    classifier,
-    annotation,
-    concept,
-    interface_,
-    dataType,
-    primitiveType,
-    enumeration,
-    enumerationLiteral,
-    language
-)
 
 
 export const metaConcepts = {

@@ -1,6 +1,6 @@
 {
   "name": "@lionweb/core",
-  "version": "0.6.11",
+  "version": "0.6.12",
   "description": "LionWeb core for {Java|Type}Script",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -23,7 +23,7 @@ export interface PrimitiveTypeDeserializer {
  * @param languages - a {@link Language language} that the serialized model is expected to conform to
  * @param dependentNodes - a collection of nodes from dependent models against which all references in the serialized model are supposed to resolve against
  * @param primitiveTypeDeserializer - a deserializer for values of primitive types (by default a {@link DefaultPrimitiveTypeDeserializer})
- * @param handler - a handler for reporting problems (by default a {@link defaultSimplisticHandler})
+ * @param problemHandler - a handler for reporting problems (by default a {@link defaultSimplisticHandler})
  */
 export const deserializeSerializationChunk = <NT extends Node>(
     serializationChunk: SerializationChunk,
@@ -33,11 +33,11 @@ export const deserializeSerializationChunk = <NT extends Node>(
     dependentNodes: Node[],
     // TODO (#13)  see if you can turn this into [nodes: Node[], instantiationFacade: InstantiationFacade<Node>][] after all
     primitiveTypeDeserializer: PrimitiveTypeDeserializer = new DefaultPrimitiveTypeDeserializer(),
-    handler: SimplisticHandler = defaultSimplisticHandler
+    problemHandler: SimplisticHandler = defaultSimplisticHandler
 ): NT[] => {
 
     if (serializationChunk.serializationFormatVersion !== currentSerializationFormatVersion) {
-        handler.reportProblem(`can't deserialize from serialization format other than version "${currentSerializationFormatVersion}" - assuming that version`)
+        problemHandler.reportProblem(`can't deserialize from serialization format other than version "${currentSerializationFormatVersion}" - assuming that version`)
     }
 
     const symbolTable = new MemoisingSymbolTable(languages)
@@ -71,8 +71,8 @@ export const deserializeSerializationChunk = <NT extends Node>(
         try {
             return instantiationFacade.nodeFor(parent, classifier, id, propertySettings)
         } catch (e: unknown) {
-            handler.reportProblem(`error occurred during instantiation of a node for classifier ${classifier.name} with meta-pointer (${classifier.language.key}, ${classifier.language.version}, ${classifier.key}); reason:`);
-            handler.reportProblem((e as Error).toString())
+            problemHandler.reportProblem(`error occurred during instantiation of a node for classifier ${classifier.name} with meta-pointer (${classifier.language.key}, ${classifier.language.version}, ${classifier.key}); reason:`);
+            problemHandler.reportProblem((e as Error).toString())
             return null
         }
     }
@@ -85,7 +85,7 @@ export const deserializeSerializationChunk = <NT extends Node>(
         const classifier = symbolTable.entityMatching(classifierMetaPointer)
 
         if (classifier === undefined || !(classifier instanceof Classifier)) {
-            handler.reportProblem(`can't deserialize node with id=${id}: can't find the classifier with key ${classifierMetaPointer.key} in language (${classifierMetaPointer.language}, ${classifierMetaPointer.version})`)
+            problemHandler.reportProblem(`can't deserialize node with id=${id}: can't find the classifier with key ${classifierMetaPointer.key} in language (${classifierMetaPointer.language}, ${classifierMetaPointer.version})`)
             return null
         }
 
@@ -181,19 +181,19 @@ export const deserializeSerializationChunk = <NT extends Node>(
         .filter((nodeOrNull) => nodeOrNull !== null)
         .map((node) => node!)
 
-    const nodesOfDependentModelsById = byIdMap(dependentNodes)
+    const dependentNodesById = byIdMap(dependentNodes)
 
     referencesToInstall.forEach(([node, reference, refId]) => {
-        const lookUpById = () => {
-            const target = deserializedNodeById[refId] ?? nodesOfDependentModelsById[refId]
+        const target = deserializedNodeById[refId] ?? dependentNodesById[refId]
+        const value = (() => {
             if (target === undefined) {
                 const metaTypeMessage = "concept" in node ? ` and (meta-)type ${node.concept}` : ""
-                handler.reportProblem(`couldn't resolve the target with id=${refId} of a "${reference.name}" reference on the node with id=${node.id}${metaTypeMessage}`)
+                problemHandler.reportProblem(`couldn't resolve the target with id=${refId} of a "${reference.name}" reference on the node with id=${node.id}${metaTypeMessage}`)
                 return unresolved
             }
             return target
-        }
-        instantiationFacade.setFeatureValue(node, reference, lookUpById())
+        })()
+        instantiationFacade.setFeatureValue(node, reference, value)
     })
 
     return rootLikeNodes

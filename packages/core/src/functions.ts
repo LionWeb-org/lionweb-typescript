@@ -18,3 +18,10 @@ export const containmentChain = (node: Node): Node[] => {
 export const asIds = (nodeOrNulls: (Node | null)[]): (Id | null)[] =>
     nodeOrNulls.map((nodeOrNull) => nodeOrNull === null ? null : nodeOrNull.id)
 
+
+/**
+ * @return the id of the given {@link Node node}.
+ */
+export const idOf = <T extends Node>({id}: T): string =>
+    id
+

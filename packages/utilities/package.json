@@ -1,6 +1,6 @@
 {
   "name": "@lionweb/utilities",
-  "version": "0.6.11",
+  "version": "0.6.12",
   "description": "LionWeb utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "url": "https://github.com/LionWeb-io/lionweb-typescript/issues"
   },
   "dependencies": {
-    "@lionweb/core": "0.6.11",
+    "@lionweb/core": "0.6.12",
     "littoral-templates": "0.3.0",
     "nanoid": "5.0.9"
   },

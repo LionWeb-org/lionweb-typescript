@@ -49,18 +49,6 @@ const inamed = factory.interface("INamed")
 const inamed_name = factory.property(inamed, "name")
     .ofType(stringDatatype)
 
-inamed.havingFeatures(inamed_name)
-
-
-lioncoreBuiltins.havingEntities(
-    stringDatatype,
-    booleanDatatype,
-    integerDatatype,
-    jsonDatatype,
-    node,
-    inamed
-)
-
 
 type BuiltinPrimitive = string | boolean | number | Record<string, unknown> | Array<unknown>
 type PrimitiveTypeValue = BuiltinPrimitive | unknown

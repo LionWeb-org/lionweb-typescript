@@ -17,7 +17,13 @@ import {StringsMapper} from "../utils/string-mapping.js"
 
 /**
  * A factory that produces a {@link Language} instance,
- * as well as elements contained by that instance.
+ * as well as {@link LanguageEntity entities} contained by that instance
+ * and {@link Feature features} of {@link Classifier classifiers}
+ * and {@link EnumerationLiteral enumeration literals} of {@link Enumeration enumerations}.
+ *
+ * The factory methods take care of proper containment.
+ * *Note:* also calling `havingEntities`, `havingFeatures`, and `havingLiterals` doesn't produce duplicates.
+ * (This is to stay backward compatible.)
  */
 export class LanguageFactory {
 
@@ -32,44 +38,60 @@ export class LanguageFactory {
     }
 
 
-    // TODO  also take care of containment immediately? (then most calls to .having<X> would be unnecessary/wrong)
-
     annotation(name: string, extends_?: SingleRef<Annotation>) {
-        return new Annotation(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name), extends_)
+        const annotation = new Annotation(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name), extends_)
+        this.language.havingEntities(annotation)
+        return annotation
     }
 
     concept(name: string, abstract: boolean, extends_?: SingleRef<Concept>) {
-        return new Concept(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name), abstract, extends_)
+        const concept = new Concept(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name), abstract, extends_)
+        this.language.havingEntities(concept)
+        return concept
     }
 
     interface(name: string) {
-        return new Interface(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        const intface = new Interface(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        this.language.havingEntities(intface)
+        return intface
     }
 
     enumeration(name: string) {
-        return new Enumeration(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        const enumeration = new Enumeration(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        this.language.havingEntities(enumeration)
+        return enumeration
     }
 
     primitiveType(name: string) {
-        return new PrimitiveType(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        const primitiveType = new PrimitiveType(this.language, name, this.key(this.language.name, name), this.id(this.language.name, name))
+        this.language.havingEntities(primitiveType)
+        return primitiveType
     }
 
 
     containment(classifier: Classifier, name: string) {
-        return new Containment(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        const containment = new Containment(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        classifier.havingFeatures(containment)
+        return containment
     }
 
     property(classifier: Classifier, name: string) {
-        return new Property(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        const property = new Property(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        classifier.havingFeatures(property)
+        return property
     }
 
     reference(classifier: Classifier, name: string) {
-        return new Reference(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        const reference = new Reference(classifier, name, this.key(this.language.name, classifier.name, name), this.id(this.language.name, classifier.name, name))
+        classifier.havingFeatures(reference)
+        return reference
     }
 
 
     enumerationLiteral(enumeration: Enumeration, name: string) {
-        return new EnumerationLiteral(enumeration, name, this.key(this.language.name, enumeration.name, name), this.id(this.language.name, enumeration.name, name))
+        const enumerationLiteral = new EnumerationLiteral(enumeration, name, this.key(this.language.name, enumeration.name, name), this.id(this.language.name, enumeration.name, name))
+        enumeration.havingLiterals(enumerationLiteral)
+        return enumerationLiteral
     }
 
 }

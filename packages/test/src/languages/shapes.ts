@@ -10,28 +10,22 @@ const factory = new LanguageFactory(
 )
 export const shapesLanguage = factory.language
 
+export const Coord = factory.concept("Coord", false)
 const Geometry = factory.concept("Geometry", false)
 const Shape = factory.concept("Shape", true).implementing(builtinClassifiers.inamed)
 export const Circle = factory.concept("Circle", false, Shape)
 const Line = factory.concept("Line", false, Shape)
-export const Coord = factory.concept("Coord", false)
 
-const GeometryShapes = factory.containment(Geometry, "shapes").ofType(Shape).isMultiple().isOptional()
-const LineStart = factory.containment(Line, "start").ofType(Coord)
-const LineEnd = factory.containment(Line, "end").ofType(Coord)
-const CircleCenter = factory.containment(Circle, "center").ofType(Coord)
-const CircleRadius = factory.property(Circle, "r").ofType(builtinPrimitives.integerDatatype)
+factory.containment(Geometry, "shapes").ofType(Shape).isMultiple().isOptional()
+factory.containment(Line, "start").ofType(Coord)
+factory.containment(Line, "end").ofType(Coord)
+factory.property(Circle, "r").ofType(builtinPrimitives.integerDatatype)
+factory.containment(Circle, "center").ofType(Coord)
 
-const CoordX = factory.property(Coord, "x").ofType(builtinPrimitives.integerDatatype)
-const CoordY = factory.property(Coord, "y").ofType(builtinPrimitives.integerDatatype)
-const CoordZ = factory.property(Coord, "z").ofType(builtinPrimitives.integerDatatype)
-
-Geometry.havingFeatures(GeometryShapes)
-Circle.havingFeatures(CircleRadius, CircleCenter)
-Line.havingFeatures(LineStart, LineEnd)
-Coord.havingFeatures(CoordX, CoordY, CoordZ)
+factory.property(Coord, "x").ofType(builtinPrimitives.integerDatatype)
+factory.property(Coord, "y").ofType(builtinPrimitives.integerDatatype)
+factory.property(Coord, "z").ofType(builtinPrimitives.integerDatatype)
 
 export const Annotated = factory.annotation("Annotated").annotating(Shape)
 
-shapesLanguage.havingEntities(Coord, Geometry, Shape, Circle, Line, Annotated)
 

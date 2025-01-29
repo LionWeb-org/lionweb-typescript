@@ -48,6 +48,34 @@ const isContainment = (feature: Feature): feature is Containment =>
 const isReference = (feature: Feature): feature is Reference =>
     feature instanceof Reference
 
+const isMultiple = (feature: Feature): feature is Link =>
+    feature instanceof Link && feature.multiple
+
+
+/**
+ * The (names of the) metatypes of a feature.
+ */
+type FeatureMetaType =
+    | "Containment"
+    | "Property"
+    | "Reference"
+
+/**
+ * @return the (name of the) metatype of the given {@link Feature feature}.
+ */
+const featureMetaType = (feature: Feature): FeatureMetaType => {
+    if (feature instanceof Containment) {
+        return "Containment"
+    }
+    if (feature instanceof Property) {
+        return "Property"
+    }
+    if (feature instanceof Reference) {
+        return "Reference"
+    }
+    throw new Error(`unhandled Feature sub type ${feature.constructor.name}`)
+}
+
 
 /**
  * Determines whether a {@link Feature feature} is "relational",
@@ -145,7 +173,7 @@ const concatenateNamesOf = (separator: string, nodes: M3Concept[]): string =>
 /**
  * @return the qualified name of the given {@link INamed named thing}.
  */
-const qualifiedNameOf = <T extends INamed>(node: T, separator = "."): string =>
+const qualifiedNameOf = <T extends INamed & Node>(node: T, separator = "."): string =>
     concatenateNamesOf(separator, containmentChain(node).reverse() as M3Concept[])
 
 
@@ -162,13 +190,6 @@ const namedsOf = (language: Language): M3Concept[] =>
  */
 const keyOf = <T extends IKeyed>({key}: T): string =>
     key
-
-
-/**
- * @return the id of the given {@link M3Concept}.
- */
-const idOf = <T extends M3Concept>({id}: T): string =>
-    id
 
 
 /**
@@ -202,7 +223,7 @@ const inheritsFrom = (classifier: Classifier): Classifier[] => {
     if (classifier instanceof Interface) {
         return classifier.extends
     }
-    throw new Error(`concept type ${typeof classifier} not handled`)
+    throw new Error(`classifier type ${typeof classifier} not handled`)
 }
 
 /**
@@ -296,15 +317,16 @@ export {
     containmentChain,
     directlyContaineds,
     entitiesSortedByName,
+    featureMetaType,
     flatMap,
     idBasedClassifierDeducerFor,
-    idOf,
     inheritedCycleWith,
     inheritsFrom,
     instantiableClassifiersOf,
     isConcrete,
     isContainment,
     isEnumeration,
+    isMultiple,
     isProperty,
     isReference,
     keyOf,
@@ -317,5 +339,9 @@ export {
     relationsOf,
     type,
     qualifiedNameOf
+}
+
+export type {
+    FeatureMetaType
 }
 

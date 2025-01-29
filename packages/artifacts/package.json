@@ -13,9 +13,9 @@
     "url": "https://github.com/LionWeb-io/lionweb-typescript/issues"
   },
   "devDependencies": {
-    "@lionweb/core": "0.6.11",
+    "@lionweb/core": "0.6.12",
     "@lionweb/test": "0.7.0-dev.0",
-    "@lionweb/utilities": "0.6.11"
+    "@lionweb/utilities": "0.6.12"
   },
   "scripts": {
     "clean": "rm -rf dist/",
